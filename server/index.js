@@ -2,11 +2,11 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const connectDB = require('./config/db');
+const createError = require("http-errors");
+const app = express();
 
 // Routes
 const bookRoute = require("./routes/api/books");
-const createError = require("http-errors");
-const app = express();
 
 // Middleware
 app.use(bodyParser.json());
@@ -17,10 +17,13 @@ app.use(
 );
 // cors
 app.use(cors({ origin: true, credentials: true }));
+
 // use Routes
 app.use("/api/books", bookRoute);
+
 // Connect Database
 connectDB();
+
 // Init Middleware
 app.use(express.json({ extended: false }));
 
@@ -41,5 +44,3 @@ const port = process.env.PORT || 4000;
 app.listen(port, () => {
   console.log("Server running on port" + port);
 });
-
-
