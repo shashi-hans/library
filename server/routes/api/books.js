@@ -36,7 +36,7 @@ router.get('/:id', (req, res) => {
 });
 
 // @route POST api/books
-// @description add/save book
+// @description add/save/create book
 // @access Public
 router.post('/', (req, res) => {
   Book.create(req.body)
