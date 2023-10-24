@@ -3,18 +3,16 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const connectDB = require('./config/db');
 const createError = require("http-errors");
+
+// create express app
 const app = express();
 
-// Routes
+// Required Routes
 const bookRoute = require("./routes/api/books");
 
 // Middleware
 app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
+app.use(bodyParser.urlencoded({extended: true,}));
 // cors
 app.use(cors({ origin: true, credentials: true }));
 
