@@ -8,8 +8,8 @@ import OnlineLibraries from './OnlineLibraries';
 
 function ShowBookList() {
   const [books, setBooks] = useState([]);
-  const [ulDisplay, setUlDisplay] = useState(true);
-  const [listDisplay, setListDisplay] = useState(true);
+  const [ulDisplay, setUlDisplay] = useState(false);
+  const [listDisplay, setListDisplay] = useState(false);
 
   useEffect(() => {
     if (isMobile) { 
@@ -78,7 +78,7 @@ function ShowBookList() {
               </Link>
             </div>
           </div>
-          {!isMobile &&  <div>{bookList}</div>}
+          {!isMobile &&  <div className='bookList'>{bookList}</div>}
         </div>
         { isMobile && ulDisplay && <OnlineLibraries/>}
         { isMobile && listDisplay && <div className='bookList'>{bookList}</div>}
