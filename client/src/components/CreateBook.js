@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "../App.css";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import { fullURL } from '../util';
 
 const CreateBook = (props) => {
   // Define the state with useState hook
@@ -24,7 +25,7 @@ const CreateBook = (props) => {
     e.preventDefault();
 
     axios
-      .post('http://localhost:4000/api/books', book)
+      .post(fullURL, book)
       .then((res) => {
         setBook({
           title: '',
@@ -50,7 +51,7 @@ const CreateBook = (props) => {
           <div className='col-md-8 m-auto'>
             <br />
             <Link to='/' className='btn btn-outline-warning float-left'>
-              Show BooK List
+              Library Room
             </Link>
           </div>
           <div className='col-md-8 m-auto'>

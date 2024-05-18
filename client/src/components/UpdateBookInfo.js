@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../App.css';
+import { fullURL } from '../util';
 
 function UpdateBookInfo(props) {
   const [book, setBook] = useState({
@@ -18,7 +19,7 @@ function UpdateBookInfo(props) {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:4000/api/books/${id}`)
+      .get(`${fullURL}/${id}`)
       .then((res) => {
         setBook({
           title: res.data.title,
@@ -65,9 +66,8 @@ function UpdateBookInfo(props) {
       <div className='container'>
         <div className='row'>
           <div className='col-md-8 m-auto'>
-            <br />
             <Link to='/' className='btn btn-outline-warning float-left'>
-              Show BooK List
+              Library Room
             </Link>
           </div>
           <div className='col-md-8 m-auto'>
@@ -89,8 +89,6 @@ function UpdateBookInfo(props) {
                 onChange={onChange}
               />
             </div>
-            <br />
-
             <div className='form-group'>
               <label htmlFor='isbn'>ISBN</label>
               <input
@@ -102,8 +100,6 @@ function UpdateBookInfo(props) {
                 onChange={onChange}
               />
             </div>
-            <br />
-
             <div className='form-group'>
               <label htmlFor='author'>Author</label>
               <input
@@ -115,8 +111,6 @@ function UpdateBookInfo(props) {
                 onChange={onChange}
               />
             </div>
-            <br />
-
             <div className='form-group'>
               <label htmlFor='description'>Description</label>
               <textarea
@@ -128,8 +122,6 @@ function UpdateBookInfo(props) {
                 onChange={onChange}
               />
             </div>
-            <br />
-
             <div className='form-group'>
               <label htmlFor='published_date'>Published Date</label>
               <input
@@ -141,8 +133,6 @@ function UpdateBookInfo(props) {
                 onChange={onChange}
               />
             </div>
-            <br />
-
             <div className='form-group'>
               <label htmlFor='publisher'>Publisher</label>
               <input
@@ -154,8 +144,6 @@ function UpdateBookInfo(props) {
                 onChange={onChange}
               />
             </div>
-            <br />
-
             <button
               type='submit'
               className='btn btn-outline-info btn-lg btn-block'

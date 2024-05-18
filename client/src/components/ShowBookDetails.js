@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import '../App.css';
 import axios from 'axios';
+import { fullURL } from '../util';
 
 function ShowBookDetails(props) {
   const [book, setBook] = useState({});
@@ -11,7 +12,7 @@ function ShowBookDetails(props) {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:4000/api/books/${id}`)
+      .get(`${fullURL}/${id}`)
       .then((res) => {
         setBook(res.data);
       })
@@ -22,7 +23,7 @@ function ShowBookDetails(props) {
 
   const onDeleteClick = (id) => {
     axios
-      .delete(`http://localhost:4000/api/books/${id}`)
+      .delete(`${fullURL}/${id}`)
       .then((res) => {
         navigate('/');
       })
@@ -77,12 +78,12 @@ function ShowBookDetails(props) {
           <div className='col-md-10 m-auto'>
             <br /> <br />
             <Link to='/' className='btn btn-outline-warning float-left'>
-              Show Book List
+              Library Room
             </Link>
           </div>
           <br />
           <div className='col-md-8 m-auto'>
-            <h1 className='display-4 text-center'>Book's Record</h1>
+            <h2 className='display-4 text-center'>Book Record</h2>
             <p className='lead text-center'>View Book's Info</p>
             <hr /> <br />
           </div>
