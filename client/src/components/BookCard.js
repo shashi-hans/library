@@ -10,13 +10,14 @@ const BookCard = (props) => {
         <div className="card-container">
             <div >
                 <Link to={`/show-book/${book._id}`}>
-                    <img className="desc" src={img} alt="" />
+                    <img className="desc" src={book.book_image || img} alt="" />
                 </Link>    
             </div>
             <div >
                 <h2>{ book.title }</h2>
                 <h3>{book.author}</h3>
-                <p>{book.description}</p>   
+                <h3>{book.genre}</h3>   
+                <button href="www.google.com" target="blank">Read</button>
             </div>
         </div>
     )

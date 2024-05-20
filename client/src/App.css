@@ -66,6 +66,7 @@
 }
 .library-section {
   width: 30%;
+  min-width: 200px;
   border-right: 1px solid white;
   overflow: scroll;
   .libraries {
@@ -131,7 +132,9 @@ li {
 }
 .bookList{
   display: flex;
-  margin-top: 20px;
+  margin: 20px 10px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 .hidden {
   display: none;
@@ -139,6 +142,16 @@ li {
 .visible {
   display: flex;
   cursor: pointer;
+}
+.book-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px !important;
+  img {height: 200px;}
+  table{
+    margin-bottom: 0px;
+    line-height: 2.5;
+  }
 }
 
 /* Mobile css */
@@ -167,5 +180,34 @@ li {
     cursor: pointer;
     margin-top: 20px;
     font-size: 16px;
+  }
+  .book-info {
+    flex-direction: column-reverse;
+    align-items: center;
+    img{margin: 10px;}
+  }
+  table{
+    margin: 10px;
+  }
+}
+
+@media (min-width: 576px) {
+  .container {
+      max-width: 570px;
+  }
+}
+@media (min-width: 768px) {
+  .container {
+      max-width: 760px;
+  }
+}
+@media (min-width: 992px) {
+  .container {
+      max-width: 960px;
+  }
+}
+@media (min-width: 1200px) {
+  .container {
+      max-width: 1140px;
   }
 }

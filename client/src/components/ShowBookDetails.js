@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import '../App.css';
 import axios from 'axios';
+import '../App.css';
 import { fullURL } from '../util';
+import img from "../img/book.jpg"
 
 function ShowBookDetails(props) {
   const [book, setBook] = useState({});
@@ -17,7 +18,7 @@ function ShowBookDetails(props) {
         setBook(res.data);
       })
       .catch((err) => {
-        console.log('Error from ShowBookDetails');
+        console.log('Error fetching book details.');
       });
   }, [id]);
 
@@ -33,7 +34,8 @@ function ShowBookDetails(props) {
   };
 
   const BookItem = (
-    <div>
+    <>
+      <div>
       <table className='table table-hover table-dark'>
         <tbody>
           <tr>
@@ -48,27 +50,16 @@ function ShowBookDetails(props) {
           </tr>
           <tr>
             <th scope='row'>3</th>
-            <td>ISBN</td>
-            <td>{book.isbn}</td>
-          </tr>
-          <tr>
-            <th scope='row'>4</th>
-            <td>Publisher</td>
-            <td>{book.publisher}</td>
-          </tr>
-          <tr>
-            <th scope='row'>5</th>
-            <td>Published Date</td>
-            <td>{book.published_date}</td>
-          </tr>
-          <tr>
-            <th scope='row'>6</th>
-            <td>Description</td>
-            <td>{book.description}</td>
+            <td>Genre</td>
+            <td>{book.genre}</td>
           </tr>
         </tbody>
       </table>
     </div>
+    <div>
+      <img alt="book"src={book.book_image || img}/>
+    </div>
+    </>
   );
 
   return (
@@ -76,18 +67,15 @@ function ShowBookDetails(props) {
       <div className='container'>
         <div className='row'>
           <div className='col-md-10 m-auto'>
-            <br /> <br />
             <Link to='/' className='btn btn-outline-warning float-left'>
               Library Room
             </Link>
           </div>
-          <br />
           <div className='col-md-8 m-auto'>
             <h2 className='display-4 text-center'>Book Record</h2>
             <p className='lead text-center'>View Book's Info</p>
-            <hr /> <br />
           </div>
-          <div className='col-md-10 m-auto'>{BookItem}</div>
+          <div className='col-md-10 m-auto book-info'>{BookItem}</div>
           <div className='col-md-6 md5'>
             <button
               type='button'

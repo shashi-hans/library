@@ -7,22 +7,20 @@ const BookSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  isbn: {
-    type: String,
-    required: true
-  },
   author: {
     type: String,
     required: true
   },
-  description: {
-    type: String
+  genre: {
+    type: String,
+    required: true
   },
-  published_date: {
-    type: Date
+  file_pdf: {
+    type: String,
+    required: true
   },
-  publisher: {
-    type: String
+  book_image: {
+    type: String,
   },
   updated_date: {
     type: Date,

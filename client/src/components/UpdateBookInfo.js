@@ -4,15 +4,19 @@ import axios from 'axios';
 import '../App.css';
 import { fullURL } from '../util';
 
-function UpdateBookInfo(props) {
+function UpdateBookInfo() {
   const [book, setBook] = useState({
     title: '',
-    isbn: '',
     author: '',
-    description: '',
-    published_date: '',
-    publisher: '',
+    genre: '',
+    file_pdf: '',
+    book_image: '',
+    updated_date: '',
   });
+  const [filePDF, setFilePDF] = useState('');
+  const [bookImage, setBookImage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -21,17 +25,11 @@ function UpdateBookInfo(props) {
     axios
       .get(`${fullURL}/${id}`)
       .then((res) => {
-        setBook({
-          title: res.data.title,
-          isbn: res.data.isbn,
-          author: res.data.author,
-          description: res.data.description,
-          published_date: res.data.published_date,
-          publisher: res.data.publisher,
-        });
+        setBook(res.data);
       })
       .catch((err) => {
-        console.log('Error from UpdateBookInfo');
+        console.log('Error from UpdateBookInfo', err);
+        setError('Error fetching book details.');
       });
   }, [id]);
 
@@ -39,26 +37,50 @@ function UpdateBookInfo(props) {
     setBook({ ...book, [e.target.name]: e.target.value });
   };
 
-  const onSubmit = (e) => {
+  const onFileChange = (e) => {
+    if (e.target.name === 'file_pdf') {
+      setFilePDF(e.target.files[0]);
+    } else if (e.target.name === 'book_image') {
+      setBookImage(e.target.files[0]);
+    }
+  };
+
+  const validateForm = () => {
+    if (!book.title || !book.author || !book.genre) {
+      setError('Title, Author, and Genre are required fields.');
+      return false;
+    }
+    return true;
+  };
+
+  const onSubmit = async (e) => {
     e.preventDefault();
 
-    const data = {
-      title: book.title,
-      isbn: book.isbn,
-      author: book.author,
-      description: book.description,
-      published_date: book.published_date,
-      publisher: book.publisher,
-    };
+    if (!validateForm()) return;
 
-    axios
-      .put(`http://localhost:4000/api/books/${id}`, data)
-      .then((res) => {
-        navigate(`/show-book/${id}`);
-      })
-      .catch((err) => {
-        console.log('Error in UpdateBookInfo!');
+    const formData = new FormData();
+    formData.append('title', book.title);
+    formData.append('author', book.author);
+    formData.append('genre', book.genre);
+    if (filePDF) formData.append('file_pdf', filePDF);
+    if (bookImage) formData.append('book_image', bookImage);
+
+    setLoading(true);
+    setError('');
+
+    try {
+      await axios.put(`${fullURL}/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
+      navigate(`/`);
+    } catch (err) {
+      console.log('Error in UpdateBookInfo!', err);
+      setError('Error updating book. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -73,11 +95,12 @@ function UpdateBookInfo(props) {
           <div className='col-md-8 m-auto'>
             <h1 className='display-4 text-center'>Edit Book</h1>
             <p className='lead text-center'>Update Book's Info</p>
+            {error && <p className="text-danger text-center">{error}</p>}
           </div>
         </div>
 
         <div className='col-md-8 m-auto'>
-          <form noValidate onSubmit={onSubmit}>
+          <form noValidate onSubmit={onSubmit} encType='multipart/form-data'>
             <div className='form-group'>
               <label htmlFor='title'>Title</label>
               <input
@@ -86,17 +109,6 @@ function UpdateBookInfo(props) {
                 name='title'
                 className='form-control'
                 value={book.title}
-                onChange={onChange}
-              />
-            </div>
-            <div className='form-group'>
-              <label htmlFor='isbn'>ISBN</label>
-              <input
-                type='text'
-                placeholder='ISBN'
-                name='isbn'
-                className='form-control'
-                value={book.isbn}
                 onChange={onChange}
               />
             </div>
@@ -112,43 +124,40 @@ function UpdateBookInfo(props) {
               />
             </div>
             <div className='form-group'>
-              <label htmlFor='description'>Description</label>
-              <textarea
+              <label htmlFor='genre'>Genre</label>
+              <input
                 type='text'
-                placeholder='Description of the Book'
-                name='description'
+                placeholder='Genre'
+                name='genre'
                 className='form-control'
-                value={book.description}
+                value={book.genre}
                 onChange={onChange}
               />
             </div>
             <div className='form-group'>
-              <label htmlFor='published_date'>Published Date</label>
+              <label htmlFor='file_pdf'>Upload PDF</label>
               <input
-                type='text'
-                placeholder='Published Date'
-                name='published_date'
+                type='file'
+                name='file_pdf'
                 className='form-control'
-                value={book.published_date}
-                onChange={onChange}
+                onChange={onFileChange}
               />
             </div>
             <div className='form-group'>
-              <label htmlFor='publisher'>Publisher</label>
+              <label htmlFor='book_image'>Upload Book Image</label>
               <input
-                type='text'
-                placeholder='Publisher of the Book'
-                name='publisher'
+                type='file'
+                name='book_image'
                 className='form-control'
-                value={book.publisher}
-                onChange={onChange}
+                onChange={onFileChange}
               />
             </div>
             <button
               type='submit'
               className='btn btn-outline-info btn-lg btn-block'
+              disabled={loading}
             >
-              Update Book
+              {loading ? 'Updating...' : 'Update Book'}
             </button>
           </form>
         </div>

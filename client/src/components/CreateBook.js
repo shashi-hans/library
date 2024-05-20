@@ -5,44 +5,64 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import { fullURL } from '../util';
 
-const CreateBook = (props) => {
-  // Define the state with useState hook
+const CreateBook = () => {
   const navigate = useNavigate();
   const [book, setBook] = useState({
     title: '',
-    isbn: '',
     author: '',
-    description: '',
-    published_date: '',
-    publisher: '',
+    genre: '',
+    file_pdf: '',
+    book_image: '',
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const onChange = (e) => {
     setBook({ ...book, [e.target.name]: e.target.value });
   };
 
+  const validateForm = () => {
+    return book.title && book.author && book.genre && book.file_pdf && book.book_image;
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
+    setError('');
 
-    axios
-      .post(fullURL, book)
+    if (!validateForm()) {
+      setError('All fields are required.');
+      return;
+    }
+    console.log("book data==",book)
+    setLoading(true);
+    axios.post(fullURL, book)
       .then((res) => {
         setBook({
           title: '',
-          isbn: '',
           author: '',
-          description: '',
-          published_date: '',
-          publisher: '',
+          genre: '',
+          file_pdf: '',
+          book_image: '',
         });
-
-        // Push to /
-        navigate('/');
+        // display success pop-up
+        navigate('/'); // remove navigate
       })
       .catch((err) => {
-        console.log('Error in CreateBook!');
+        console.error('Error in CreateBook:', err);
+        setError('Error creating book. Please try again.');
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
+
+  const formFields = [
+    { name: 'title', type: 'text', placeholder: 'Title of the Book' },
+    { name: 'author', type: 'text', placeholder: 'Author' },
+    { name: 'genre', type: 'text', placeholder: 'Genre of book' },
+    { name: 'file_pdf', type: 'file', placeholder: 'Upload pdf of Book',accept:".pdf" },
+    { name: 'book_image', type: 'file', placeholder: 'Upload image of Book',accept:".jpg, .jpeg, .png" },
+  ];
 
   return (
     <div className='CreateBook'>
@@ -58,77 +78,32 @@ const CreateBook = (props) => {
             <h1 className='display-4 text-center'>Add Book</h1>
             <p className='lead text-center'>Create new book</p>
 
+            {error && <div className="alert alert-danger">{error}</div>}
+
             <form noValidate onSubmit={onSubmit}>
-              <div className='form-group'>
-                <input
-                  type='text'
-                  placeholder='Title of the Book'
-                  name='title'
-                  className='form-control'
-                  value={book.title}
-                  onChange={onChange}
-                />
-              </div>
-              <br />
+              {formFields.map((field) => (
+                <div className='form-group' key={field.name}>
+                  <label htmlFor={field.name}>{field.placeholder}</label>
+                  <input
+                    id={field.name}
+                    type={field.type}
+                    placeholder={field.placeholder}
+                    name={field.name}
+                    accept={field.accept}
+                    className='form-control'
+                    value={book[field.name]}
+                    onChange={onChange}
+                  />
+                </div>
+              ))}
 
-              <div className='form-group'>
-                <input
-                  type='text'
-                  placeholder='ISBN'
-                  name='isbn'
-                  className='form-control'
-                  value={book.isbn}
-                  onChange={onChange}
-                />
-              </div>
-
-              <div className='form-group'>
-                <input
-                  type='text'
-                  placeholder='Author'
-                  name='author'
-                  className='form-control'
-                  value={book.author}
-                  onChange={onChange}
-                />
-              </div>
-
-              <div className='form-group'>
-                <input
-                  type='text'
-                  placeholder='Describe this book'
-                  name='description'
-                  className='form-control'
-                  value={book.description}
-                  onChange={onChange}
-                />
-              </div>
-
-              <div className='form-group'>
-                <input
-                  type='date'
-                  placeholder='published_date'
-                  name='published_date'
-                  className='form-control'
-                  value={book.published_date}
-                  onChange={onChange}
-                />
-              </div>
-              <div className='form-group'>
-                <input
-                  type='text'
-                  placeholder='Publisher of this Book'
-                  name='publisher'
-                  className='form-control'
-                  value={book.publisher}
-                  onChange={onChange}
-                />
-              </div>
-
-              <input
+              <button
                 type='submit'
                 className='btn btn-outline-warning btn-block mt-4'
-              />
+                disabled={loading}
+              >
+                {loading ? 'Submitting...' : 'Submit'}
+              </button>
             </form>
           </div>
         </div>
