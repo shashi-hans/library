@@ -14,10 +14,10 @@ const BookCard = (props) => {
                 </Link>    
             </div>
             <div >
-                <h2>{ book.title }</h2>
+                <h2>{book.title }</h2>
                 <h3>{book.author}</h3>
                 <h3>{book.genre}</h3>   
-                <button href="www.google.com" target="blank">Read</button>
+                {/* <button href="www.google.com" target="blank">Read</button> */}
             </div>
         </div>
     )

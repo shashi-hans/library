@@ -1,5 +1,4 @@
 {
-    "mongoURI":
-    "mongodb+srv://Library:Librarydb_2023@cluster0.0pbjcxe.mongodb.net/?retryWrites=true&w=majority"
+    "mongoURI": "mongodb://127.0.0.1:27017/mydatabase",
+    "baseUrl": "https://localhost:4000"
   }
- 

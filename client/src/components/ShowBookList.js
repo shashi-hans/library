@@ -4,19 +4,17 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import BookCard from './BookCard';
 import { fullURL } from '../util';
-import OnlineLibraries from './OnlineLibraries';
 
 function ShowBookList() {
   const [books, setBooks] = useState([]);
-  const [ulDisplay, setUlDisplay] = useState(false);
   const [listDisplay, setListDisplay] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    if (isMobile) { 
-      setUlDisplay(!isMobile); 
-      setListDisplay(!isMobile) 
-    }
-
+    if (isMobileDevice()) { 
+    setIsMobile(true)
+    setListDisplay(!isMobileDevice()) 
+  }
     axios
       .get(fullURL)
       .then((res) => {
@@ -35,24 +33,16 @@ function ShowBookList() {
   const isMobileDevice = () => {
     const userAgent = navigator.userAgent || window.opera;
 
+    console.log("-------isMobile----")
     // Check for mobile user agents
     return /android|iphone|ipad|ipod|opera mini|iemobile|wpdesktop/.test(userAgent.toLowerCase());
   };
 
-  const isMobile = isMobileDevice();
-  console.log("isMobile--", isMobile)
-  console.log("ulDisplay--", ulDisplay)
+  
 
-  const displayUlList = () => {
-    if(isMobile) {
-      setUlDisplay(true)
-      setListDisplay(false)
-    }
-  }
   const displayList = () => {
-    if(isMobile) {
+    if(isMobileDevice()) {
       setListDisplay(true)
-      setUlDisplay(false)
     }
   }
 
@@ -62,10 +52,6 @@ function ShowBookList() {
         <h2 className='display-4 text-center'>Library Room</h2>
       </div>
       <div className='container hp'>
-        <div className='library-section'>
-          <div className="libraries" onClick={displayUlList}>Online Libraries</div>
-          { !isMobile && <OnlineLibraries/>}
-        </div>
         <div>
           <div className='row'>
             <h3 onClick={displayList}>Books List</h3>
@@ -80,7 +66,6 @@ function ShowBookList() {
           </div>
           {!isMobile &&  <div className='bookList'>{bookList}</div>}
         </div>
-        { isMobile && ulDisplay && <OnlineLibraries/>}
         { isMobile && listDisplay && <div className='bookList'>{bookList}</div>}
       </div>
     </div>

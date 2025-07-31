@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../App.css';
@@ -9,155 +9,137 @@ function UpdateBookInfo() {
     title: '',
     author: '',
     genre: '',
-    file_pdf: '',
-    book_image: '',
+    isbn: '',
+    published_date: '',
+    publisher: '',
     updated_date: '',
   });
-  const [filePDF, setFilePDF] = useState('');
-  const [bookImage, setBookImage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState('');
+  const [fetchError, setFetchError] = useState('');
 
   const { id } = useParams();
   const navigate = useNavigate();
 
+  // Fetch book data on mount
   useEffect(() => {
-    axios
-      .get(`${fullURL}/${id}`)
-      .then((res) => {
-        setBook(res.data);
-      })
-      .catch((err) => {
-        console.log('Error from UpdateBookInfo', err);
-        setError('Error fetching book details.');
-      });
+    const controller = new AbortController();
+
+    const fetchBook = async () => {
+      try {
+        setLoading(true);
+        const { data } = await axios.get(
+          `${fullURL}/${id}`,
+          { signal: controller.signal }
+        );
+        setBook({
+          title: data.title || '',
+          isbn: data.isbn || '',
+          author: data.author || '',
+          genre: data.genre || '',
+          published_date: data.published_date ? data.published_date.slice(0, 10) : '',
+          publisher: data.publisher || '',
+        });
+        setFetchError('');
+      } catch (error) {
+        if (!axios.isCancel(error)) {
+          setFetchError('Failed to fetch book data.');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBook();
+    return () => controller.abort();
   }, [id]);
 
-  const onChange = (e) => {
-    setBook({ ...book, [e.target.name]: e.target.value });
+   // Validation logic
+  const validate = useCallback(() => {
+    const tempErrors = {};
+    if (!book.title.trim()) tempErrors.title = 'Title is required';
+    if (!book.isbn.trim()) tempErrors.isbn = 'ISBN is required';
+    if (!book.author.trim()) tempErrors.author = 'Author is required';
+    if (!book.genre.trim()) tempErrors.genre = 'genre is required';
+    if (!book.published_date) tempErrors.published_date = 'Published Date is required';
+    if (!book.publisher.trim()) tempErrors.publisher = 'Publisher is required';
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  }, [book]);
+
+    // Handle input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setBook((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
-  const onFileChange = (e) => {
-    if (e.target.name === 'file_pdf') {
-      setFilePDF(e.target.files[0]);
-    } else if (e.target.name === 'book_image') {
-      setBookImage(e.target.files[0]);
-    }
-  };
-
-  const validateForm = () => {
-    if (!book.title || !book.author || !book.genre) {
-      setError('Title, Author, and Genre are required fields.');
-      return false;
-    }
-    return true;
-  };
-
-  const onSubmit = async (e) => {
+  // Handle form submit
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!validateForm()) return;
-
-    const formData = new FormData();
-    formData.append('title', book.title);
-    formData.append('author', book.author);
-    formData.append('genre', book.genre);
-    if (filePDF) formData.append('file_pdf', filePDF);
-    if (bookImage) formData.append('book_image', bookImage);
-
-    setLoading(true);
-    setError('');
-
+    if (!validate()) return;
     try {
-      await axios.put(`${fullURL}/${id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      navigate(`/`);
-    } catch (err) {
-      console.log('Error in UpdateBookInfo!', err);
-      setError('Error updating book. Please try again.');
-    } finally {
-      setLoading(false);
+      await axios.put(`${fullURL}/${id}`, book);
+      navigate(`/show-book/${id}`);
+    } catch (error) {
+      setFetchError('Failed to update book.');
     }
   };
+
+  if (loading) {
+    return <div className="text-center mt-5">Loading...</div>;
+  }
 
   return (
-    <div className='UpdateBookInfo'>
-      <div className='container'>
-        <div className='row'>
-          <div className='col-md-8 m-auto'>
-            <Link to='/' className='btn btn-outline-warning float-left'>
-              Library Room
+    <div className="UpdateBookInfo">
+      <div className="container">
+        <div className="row">
+          <div className="col-md-8 m-auto">
+            <br />
+            <Link to="/" className="btn btn-outline-warning float-left">
+              Show Book List
             </Link>
           </div>
-          <div className='col-md-8 m-auto'>
-            <h1 className='display-4 text-center'>Edit Book</h1>
-            <p className='lead text-center'>Update Book's Info</p>
-            {error && <p className="text-danger text-center">{error}</p>}
+          <div className="col-md-8 m-auto">
+            <h1 className="display-4 text-center">Edit Book</h1>
+            <p className="lead text-center">Update Book's Info</p>
           </div>
         </div>
-
-        <div className='col-md-8 m-auto'>
-          <form noValidate onSubmit={onSubmit} encType='multipart/form-data'>
-            <div className='form-group'>
-              <label htmlFor='title'>Title</label>
-              <input
-                type='text'
-                placeholder='Title of the Book'
-                name='title'
-                className='form-control'
-                value={book.title}
-                onChange={onChange}
-              />
+        <div className="col-md-8 m-auto">
+          {fetchError && (
+            <div className="alert alert-danger" role="alert">
+              {fetchError}
             </div>
-            <div className='form-group'>
-              <label htmlFor='author'>Author</label>
-              <input
-                type='text'
-                placeholder='Author'
-                name='author'
-                className='form-control'
-                value={book.author}
-                onChange={onChange}
-              />
-            </div>
-            <div className='form-group'>
-              <label htmlFor='genre'>Genre</label>
-              <input
-                type='text'
-                placeholder='Genre'
-                name='genre'
-                className='form-control'
-                value={book.genre}
-                onChange={onChange}
-              />
-            </div>
-            <div className='form-group'>
-              <label htmlFor='file_pdf'>Upload PDF</label>
-              <input
-                type='file'
-                name='file_pdf'
-                className='form-control'
-                onChange={onFileChange}
-              />
-            </div>
-            <div className='form-group'>
-              <label htmlFor='book_image'>Upload Book Image</label>
-              <input
-                type='file'
-                name='book_image'
-                className='form-control'
-                onChange={onFileChange}
-              />
-            </div>
+          )}
+          <form noValidate onSubmit={handleSubmit}>
+            {[
+              { label: 'Title', name: 'title', type: 'text', placeholder: 'Title of the Book' },
+              { label: 'Author', name: 'author', type: 'text', placeholder: 'Author' },
+              { label: 'genre', name: 'genre', type: 'text', placeholder: 'genre of the Book' },
+              { label: 'ISBN', name: 'isbn', type: 'text', placeholder: 'ISBN' },
+              { label: 'Published Date', name: 'published_date', type: 'date' },
+              { label: 'Publisher', name: 'publisher', type: 'text', placeholder: 'Publisher of the Book' },
+            ].map(({ label, name, type, placeholder }) => (
+              <div className="form-group" key={name}>
+                <label htmlFor={name}>{label}</label>
+                  <input
+                    type={type}
+                    placeholder={placeholder}
+                    name={name}
+                    className={`form-control ${errors[name] ? 'is-invalid' : ''}`}
+                    value={book[name]}
+                    onChange={handleChange}
+                    autoFocus={name === 'title'}
+                  />
+                {errors[name] && <div className="invalid-feedback">{errors[name]}</div>}
+                <br />
+              </div>
+            ))}
             <button
-              type='submit'
-              className='btn btn-outline-info btn-lg btn-block'
-              disabled={loading}
+              type="submit"
+              className="btn btn-outline-info btn-lg btn-block"
             >
-              {loading ? 'Updating...' : 'Update Book'}
+              Update Book
             </button>
           </form>
         </div>
@@ -165,5 +147,7 @@ function UpdateBookInfo() {
     </div>
   );
 }
+
+
 
 export default UpdateBookInfo;

@@ -53,6 +53,22 @@ function ShowBookDetails(props) {
             <td>Genre</td>
             <td>{book.genre}</td>
           </tr>
+          <tr>
+            <th scope='row'>3</th>
+            <td>ISBN</td>
+            <td>{book.isbn}</td>
+          </tr>
+          <tr>
+            <th scope='row'>4</th>
+            <td>Publisher</td>
+            <td>{book.publisher}</td>
+          </tr>
+          <tr>
+            <th scope='row'>5</th>
+            <td>Published Date</td>
+            <td>{book.published_date}</td>
+          </tr>
+          <tr></tr>
         </tbody>
       </table>
     </div>

@@ -3,18 +3,14 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const connectDB = require('./config/db');
 const createError = require("http-errors");
-
-// create express app
+const bookRoute = require("./routes/routeBooks");
 const app = express();
 
-// Required Routes
-const bookRoute = require("./routes/api/routeBooks");
+app.use(cors({ origin: true, methods: ['GET', 'POST', 'PUT', 'DELETE'], credentials: true }));
 
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true,}));
-// cors
-app.use(cors({ origin: true, credentials: true }));
 
 // use Routes
 app.use("/api/books", bookRoute);

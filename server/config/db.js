@@ -9,7 +9,7 @@ const db = config.get('mongoURI');
         useNewUrlParser: true,
       });
   
-      console.log('MongoDB is Connected...');
+      console.log('MongoDB is Connected to database => ',db);
     } catch (err) {
       console.error("Error connecting to MongoDB ...");
       console.error("Reason -- ",err.message);

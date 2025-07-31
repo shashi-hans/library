@@ -64,24 +64,6 @@
 .col-md-12 {
   border-bottom: 2px solid white;
 }
-.library-section {
-  width: 30%;
-  min-width: 200px;
-  border-right: 1px solid white;
-  overflow: scroll;
-  .libraries {
-    border-bottom: 1px solid white;
-    font-size: 28px;
-  }
-  a {
-    color: white;
-    margin-top: 10px;
-  }
-  a:hover{color: yellow;}
-  li {
-    width: max-content;
-  }
-}
 .librariesList {
   margin-top: 20px;
   margin-bottom: 10px;
@@ -107,7 +89,7 @@ li {
 .card-container {
   height:300px;
   width: 150px;
-  margin: 5px;
+  margin: 20px;
   border-radius: 5px;
   border: 1px solid rgba(255,155,155);
   padding: 10px;
@@ -120,6 +102,8 @@ li {
   font-size: 1em;
   font-weight: 400;
   padding: 10px 0 10px 0;
+  height: 65px;
+  overflow: hidden;
 }
 .card-container h3, p {
   font-weight: 300;
@@ -159,19 +143,6 @@ li {
   .hp{
     flex-direction: column;
     align-items: center;}
-  .library-section {
-    width: auto;
-    border-right:none;
-    .libraries{
-      color: #ffc107;
-      border: 1px solid #ffc107;
-      padding: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-    }
-  }
   .row h3{
     color: #ffc107;
     border: 1px solid #ffc107;
@@ -210,4 +181,7 @@ li {
   .container {
       max-width: 1140px;
   }
+}
+.btn.btn-outline-warning.btn-block.mt-4 {
+  margin-bottom: 50px;
 }
