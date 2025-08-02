@@ -6,7 +6,25 @@ const createError = require("http-errors");
 const bookRoute = require("./routes/routeBooks");
 const app = express();
 
-app.use(cors({ origin: true, methods: ['GET', 'POST', 'PUT', 'DELETE'], credentials: true }));
+const isProduction = process.env.NODE_ENV === 'production';
+console.log("environment ==========",process.env.NODE_ENV)
+console.log("isProduction ==========",isProduction)
+
+const allowedOrigin = isProduction
+  ? 'https://url-shortning.netlify.app'
+  : true; // allows localhost in dev
+
+app.use(cors({ 
+  origin: allowedOrigin,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  credentials: true }));
+
+// Handle preflight (OPTIONS) requests globally
+app.options('*', cors({
+  origin: allowedOrigin,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 
 // Middleware
 app.use(bodyParser.json());
