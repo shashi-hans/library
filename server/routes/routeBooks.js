@@ -79,7 +79,7 @@ router.put('/:id', (req, res) => {
 // @route DELETE api/books/:id
 // @description Delete book by id
 router.delete('/:id', (req, res) => {
-  Book.findByIdAndRemove(req.params.id, req.body)
+  Book.findByIdAndDelete(req.params.id)
     .then(book => {
       if (book) {
         console.log(`DELETE /${req.params.id} - Book entry deleted successfully`);

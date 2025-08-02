@@ -10,6 +10,13 @@ function ShowBookDetails(props) {
 
   const { id } = useParams();
   const navigate = useNavigate();
+  const date = new Date(book.published_date);
+  // format to dd/mm/yyyy
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const year = date.getUTCFullYear();
+  const formattedDt = `${day}/${month}/${year}`;
+
 
   useEffect(() => {
     axios
@@ -66,7 +73,7 @@ function ShowBookDetails(props) {
           <tr>
             <th scope='row'>5</th>
             <td>Published Date</td>
-            <td>{book.published_date}</td>
+            <td>{formattedDt}</td>
           </tr>
           <tr></tr>
         </tbody>
