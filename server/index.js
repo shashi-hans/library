@@ -11,7 +11,7 @@ console.log("environment ==========",process.env.NODE_ENV)
 console.log("isProduction ==========",isProduction)
 
 const allowedOrigin = isProduction
-  ? 'https://url-shortning.netlify.app'
+  ? 'https://library-mern-crud-app.netlify.app'
   : true; // allows localhost in dev
 
 app.use(cors({ 

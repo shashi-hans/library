@@ -1,4 +1,4 @@
 {
     "mongoURI":"mongodb+srv://Library:Librarydb_2023@cluster0.0pbjcxe.mongodb.net/?retryWrites=true&w=majority",
-    "baseUrl": "https://url-shortner-5wbk.onrender.com"
+    "baseUrl": "https://library-room.onrender.com"
   }
